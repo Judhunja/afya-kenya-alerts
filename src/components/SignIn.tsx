@@ -1,47 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { Phone, MapPin, Loader2 } from "lucide-react";
+import { User, Mail, Phone, MapPin, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-interface FormData {
+interface SignInFormData {
+  name: string;
+  email: string;
   phoneNumber: string;
-  county: string;
+  location: string;
 }
 
-interface ApiResponse {
-  success: boolean;
-  message: string;
-}
-
-const AfyaApp = () => {
-  const [formData, setFormData] = useState<FormData>({
+const SignIn = () => {
+  const [formData, setFormData] = useState<SignInFormData>({
+    name: "",
+    email: "",
     phoneNumber: "",
-    county: "",
+    location: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [locationPermission, setLocationPermission] = useState<string>("prompt");
   const { toast } = useToast();
 
   const counties = [
-    { value: "nairobi", label: "Nairobi" },
-    { value: "mombasa", label: "Mombasa" },
-    { value: "kisumu", label: "Kisumu" },
+    { value: "Nairobi", label: "Nairobi" },
+    { value: "Mombasa", label: "Mombasa" },
+    { value: "Kisumu", label: "Kisumu" },
   ];
-
-  useEffect(() => {
-    // Check if geolocation is available
-    if ("geolocation" in navigator) {
-      navigator.permissions.query({ name: "geolocation" }).then((result) => {
-        setLocationPermission(result.state);
-      });
-    }
-  }, []);
 
   const handlePhoneChange = (value: string) => {
     // Format Kenyan phone number
@@ -55,56 +43,13 @@ const AfyaApp = () => {
     setFormData({ ...formData, phoneNumber: formatted });
   };
 
-  const autoFillLocation = () => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          
-          // Simple geolocation mapping for major Kenyan cities
-          // In a real app, you'd use a proper geocoding service
-          let suggestedCounty = "";
-          
-          // Rough coordinates for major counties
-          if (latitude >= -1.4 && latitude <= -1.2 && longitude >= 36.6 && longitude <= 37.0) {
-            suggestedCounty = "nairobi";
-          } else if (latitude >= -4.1 && latitude <= -3.9 && longitude >= 39.5 && longitude <= 39.8) {
-            suggestedCounty = "mombasa";
-          } else if (latitude >= -0.2 && latitude <= 0.2 && longitude >= 34.5 && longitude <= 35.0) {
-            suggestedCounty = "kisumu";
-          }
-
-          if (suggestedCounty) {
-            setFormData({ ...formData, county: suggestedCounty });
-            toast({
-              title: "📍 Location detected!",
-              description: `Auto-filled your county based on your location.`,
-            });
-          } else {
-            toast({
-              title: "🌍 Location detected",
-              description: "Please manually select your county from the list.",
-            });
-          }
-        },
-        (error) => {
-          toast({
-            title: "❌ Location access denied",
-            description: "Please manually select your county.",
-            variant: "destructive",
-          });
-        }
-      );
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.phoneNumber || !formData.county) {
+    if (!formData.name || !formData.email || !formData.phoneNumber || !formData.location) {
       toast({
         title: "⚠️ Missing information",
-        description: "Please fill in both phone number and county.",
+        description: "Please fill in all required fields.",
         variant: "destructive",
       });
       return;
@@ -122,34 +67,36 @@ const AfyaApp = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/send-sms", {
+      const response = await fetch("http://localhost:5000/sign-in", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
           phoneNumber: `+${formData.phoneNumber}`,
-          location: counties.find(c => c.value === formData.county)?.label || formData.county,
+          location: formData.location,
         }),
       });
 
-      const result: ApiResponse = await response.json();
+      const result = await response.json();
 
-      if (response.ok && result.success) {
+      if (response.ok && result.status === "success") {
         toast({
-          title: "✅ Alert check successful!",
-          description: `${result.message} 📱`,
+          title: "✅ Registration successful!",
+          description: "Your account has been created successfully.",
         });
         
         // Reset form after successful submission
-        setFormData({ phoneNumber: "", county: "" });
+        setFormData({ name: "", email: "", phoneNumber: "", location: "" });
       } else {
-        throw new Error(result.message || "Failed to send SMS");
+        throw new Error(result.message || "Failed to register");
       }
     } catch (error) {
       toast({
-        title: "❌ Connection failed",
-        description: error instanceof Error ? error.message : "Unable to check for health alerts. Please try again.",
+        title: "❌ Registration failed",
+        description: error instanceof Error ? error.message : "Unable to create account. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -167,22 +114,60 @@ const AfyaApp = () => {
           </div>
           <h1 className="text-3xl font-bold text-foreground mb-2">AfyaApp</h1>
           <p className="text-muted-foreground text-sm">
-            Stay informed about health alerts in your area
+            Create your account to stay informed
           </p>
         </div>
 
-        {/* Main Form Card */}
+        {/* Sign In Form Card */}
         <Card className="shadow-medical border-0">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl">
-              🚨 Health Alert Check
+              👤 Create Account
             </CardTitle>
             <CardDescription>
-              Enter your details to receive SMS alerts about health issues in your county
+              Join AfyaApp to receive health alerts in your area
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Name Input */}
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-sm font-medium">
+                  👤 Full Name
+                </Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="pl-10 bg-accent/50 border-border/50 focus:bg-background transition-colors"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Email Input */}
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium">
+                  📧 Email Address
+                </Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="pl-10 bg-accent/50 border-border/50 focus:bg-background transition-colors"
+                    required
+                  />
+                </div>
+              </div>
+
               {/* Phone Number Input */}
               <div className="space-y-2">
                 <Label htmlFor="phone" className="text-sm font-medium">
@@ -198,6 +183,7 @@ const AfyaApp = () => {
                     onChange={(e) => handlePhoneChange(e.target.value)}
                     className="pl-10 bg-accent/50 border-border/50 focus:bg-background transition-colors"
                     maxLength={12}
+                    required
                   />
                 </div>
                 <p className="text-xs text-muted-foreground">
@@ -205,26 +191,15 @@ const AfyaApp = () => {
                 </p>
               </div>
 
-              {/* County Selection */}
+              {/* Location Selection */}
               <div className="space-y-2">
                 <Label className="text-sm font-medium flex items-center gap-2">
                   🌍 County
-                  {locationPermission !== "denied" && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={autoFillLocation}
-                      className="h-6 px-2 text-xs"
-                    >
-                      <MapPin className="h-3 w-3 mr-1" />
-                      Auto-fill
-                    </Button>
-                  )}
                 </Label>
                 <Select
-                  value={formData.county}
-                  onValueChange={(value) => setFormData({ ...formData, county: value })}
+                  value={formData.location}
+                  onValueChange={(value) => setFormData({ ...formData, location: value })}
+                  required
                 >
                   <SelectTrigger className="bg-accent/50 border-border/50 focus:bg-background">
                     <SelectValue placeholder="Select your county" />
@@ -250,34 +225,26 @@ const AfyaApp = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Checking for alerts...
+                    Creating account...
                   </>
                 ) : (
                   <>
-                    🩺 Check for Health Alerts
+                    🏥 Create Account
                   </>
                 )}
               </Button>
             </form>
+
+            {/* Navigation to main app */}
+            <div className="text-center mt-6">
+              <Link to="/">
+                <Button variant="ghost" size="sm">
+                  ← Back to Health Alerts
+                </Button>
+              </Link>
+            </div>
           </CardContent>
         </Card>
-
-        {/* Info Alert */}
-        <Alert className="mt-6 border-primary/20 bg-primary/5">
-          <AlertDescription className="text-sm">
-            <span className="font-medium">ℹ️ How it works:</span> We'll send you SMS alerts about health outbreaks, 
-            vaccination campaigns, and important health notices in your county.
-          </AlertDescription>
-        </Alert>
-
-        {/* Navigation to Sign In */}
-        <div className="text-center mt-6">
-          <Link to="/sign-in">
-            <Button variant="outline" size="sm">
-              Don't have an account? Sign Up →
-            </Button>
-          </Link>
-        </div>
 
         {/* Footer */}
         <div className="text-center mt-8 text-xs text-muted-foreground">
@@ -289,4 +256,4 @@ const AfyaApp = () => {
   );
 };
 
-export default AfyaApp;
+export default SignIn;
