@@ -148,7 +148,7 @@ const AfyaApp = () => {
       }
     } catch (error) {
       toast({
-        title: "❌ Connection failed",
+        title: "",
         description: error instanceof Error ? error.message : "Unable to check for health alerts. Please try again.",
         variant: "destructive",
       });
