@@ -127,7 +127,7 @@ const AfyaApp = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          phoneNumber: formData.phoneNumber,
+          phoneNumber: `+${formData.phoneNumber}`,
           location: counties.find(c => c.value === formData.county)?.label || formData.county,
         }),
       });
