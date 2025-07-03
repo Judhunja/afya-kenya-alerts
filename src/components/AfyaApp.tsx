@@ -60,11 +60,11 @@ const AfyaApp = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          
+
           // Simple geolocation mapping for major Kenyan cities
           // In a real app, you'd use a proper geocoding service
           let suggestedCounty = "";
-          
+
           // Rough coordinates for major counties
           if (latitude >= -1.4 && latitude <= -1.2 && longitude >= 36.6 && longitude <= 37.0) {
             suggestedCounty = "nairobi";
@@ -100,7 +100,7 @@ const AfyaApp = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.phoneNumber || !formData.county) {
       toast({
         title: "⚠️ Missing information",
@@ -140,11 +140,11 @@ const AfyaApp = () => {
           title: "✅ Alert check successful!",
           description: `${result.message} 📱`,
         });
-        
+
         // Reset form after successful submission
         setFormData({ phoneNumber: "", county: "" });
       } else {
-        throw new Error(result.message || "Failed to send SMS");
+        throw new Error(result.message || "");
       }
     } catch (error) {
       toast({
@@ -265,7 +265,7 @@ const AfyaApp = () => {
         {/* Info Alert */}
         <Alert className="mt-6 border-primary/20 bg-primary/5">
           <AlertDescription className="text-sm">
-            <span className="font-medium">ℹ️ How it works:</span> We'll send you SMS alerts about health outbreaks, 
+            <span className="font-medium">ℹ️ How it works:</span> We'll send you SMS alerts about health outbreaks,
             vaccination campaigns, and important health notices in your county.
           </AlertDescription>
         </Alert>
