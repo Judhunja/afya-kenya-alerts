@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { Phone, MapPin, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { API_ENDPOINTS } from "@/config";
 
 interface FormData {
   phoneNumber: string;
@@ -122,7 +123,7 @@ const AfyaApp = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/send-sms", {
+      const response = await fetch(API_ENDPOINTS.SEND_SMS, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

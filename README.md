@@ -1,4 +1,4 @@
-# AfyaApp - Health Alert System
+# AfyaApp - Health Alert System - https://afya-kenya-alerts.lovable.app
 
 A health alert system for Kenya that allows users to register and receive SMS notifications about health outbreaks in their counties.
 
@@ -25,56 +25,92 @@ A health alert system for Kenya that allows users to register and receive SMS no
 - Africa's Talking SMS API
 - Flask-CORS for cross-origin requests
 
-## 🚀 Quick Start
+## 🚀# 🚀 Quick Start
 
-### Frontend (Lovable)
+## Prerequisites
 
-The frontend is hosted on Lovable and runs automatically. You can:
+- Python 3.8 or higher
+- Node.js 16 or higher
+- MongoDB (local or remote)
+- Africa's Talking API credentials (username and API key)
 
-1. **Development in Lovable**: Visit [Lovable Project](https://lovable.dev/projects/d751b59a-5ca1-4883-b8b4-e74ba2c81fbb) and start prompting
-2. **Local Development**: 
+## Setup Instructions
+
+1. **Clone the repository**
    ```bash
    git clone <YOUR_GIT_URL>
-   cd <YOUR_PROJECT_NAME>
-   npm install
-   npm run dev
+   cd afya-kenya-alerts
    ```
 
-### Backend Setup
+## Backend Setup
 
-1. **Clone and Setup**
+1. **Install Python dependencies**
    ```bash
    cd backend
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -r requirements.txt
    ```
 
-2. **Create requirements.txt**
-   ```
-   Flask==2.3.3
-   flask-cors==4.0.0
-   africastalking==1.2.5
-   pymongo==4.5.0
-   python-dotenv==1.0.0
-   ```
-
-3. **Environment Variables**
+2. **Configure environment variables**
    Create a `.env` file in the backend directory:
    ```env
-   # MongoDB
-   MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/afyaapp
-
    # Africa's Talking API
-   AFRICASTALKING_USERNAME=your_username
-   AFRICASTALKING_API_KEY=your_api_key
-
+   AFRICASTALKING_USERNAME=your_africastalking_username
+   AFRICASTALKING_API_KEY=your_africastalking_api_key
+   
+   # MongoDB (local or remote)
+   MONGO_URI=mongodb://localhost:27017/afyaapp
+   
    # Server Configuration
    PORT=5000
+   FLASK_APP=app.py
+   FLASK_ENV=development
    ```
 
-4. **Run Backend**
+3. **Start the backend server**
    ```bash
    python app.py
    ```
+   The backend API will be available at http://localhost:5000
+
+## Frontend Setup
+
+1. **Install Node.js dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+3. **Access the application**
+   Open http://localhost:5173 in your browser
+
+## Running the Application
+
+1. **Start MongoDB**
+   Make sure MongoDB is running locally or update the `MONGO_URI` in the backend's `.env` file to point to your MongoDB instance.
+
+2. **Start the backend server**
+   In one terminal:
+   ```bash
+   cd backend
+   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+   python app.py
+   ```
+
+3. **Start the frontend**
+   In another terminal:
+   ```bash
+   npm run dev
+   ```
+
+4. **Access the application**
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:5000
 
 ## 🔧 Configuration
 

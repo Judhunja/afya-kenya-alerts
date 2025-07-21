@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { User, Mail, Phone, MapPin, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { API_ENDPOINTS } from "@/config";
 
 interface SignInFormData {
   name: string;
@@ -67,7 +68,7 @@ const SignIn = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/sign-in", {
+      const response = await fetch(API_ENDPOINTS.SIGN_IN, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
