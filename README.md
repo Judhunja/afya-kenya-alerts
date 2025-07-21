@@ -1,73 +1,192 @@
-# Welcome to your Lovable project
+# AfyaApp - Health Alert System
 
-## Project info
+A health alert system for Kenya that allows users to register and receive SMS notifications about health outbreaks in their counties.
 
-**URL**: https://lovable.dev/projects/d751b59a-5ca1-4883-b8b4-e74ba2c81fbb
+## 🏥 Features
 
-## How can I edit this code?
+- User registration with name, email, phone number, and location
+- SMS notifications for health alerts by county
+- Real-time health alerts for Nairobi, Mombasa, and Kisumu
+- MongoDB database for user data storage
+- Africa's Talking SMS integration
 
-There are several ways of editing your application.
+## 🛠️ Technology Stack
 
-**Use Lovable**
+**Frontend:**
+- React 18 with TypeScript
+- Tailwind CSS for styling
+- Shadcn/ui components
+- React Router for navigation
+- Built with Lovable
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d751b59a-5ca1-4883-b8b4-e74ba2c81fbb) and start prompting.
+**Backend:**
+- Python Flask
+- MongoDB for database
+- Africa's Talking SMS API
+- Flask-CORS for cross-origin requests
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Quick Start
 
-**Use your preferred IDE**
+### Frontend (Lovable)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+The frontend is hosted on Lovable and runs automatically. You can:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. **Development in Lovable**: Visit [Lovable Project](https://lovable.dev/projects/d751b59a-5ca1-4883-b8b4-e74ba2c81fbb) and start prompting
+2. **Local Development**: 
+   ```bash
+   git clone <YOUR_GIT_URL>
+   cd <YOUR_PROJECT_NAME>
+   npm install
+   npm run dev
+   ```
 
-Follow these steps:
+### Backend Setup
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. **Clone and Setup**
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2. **Create requirements.txt**
+   ```
+   Flask==2.3.3
+   flask-cors==4.0.0
+   africastalking==1.2.5
+   pymongo==4.5.0
+   python-dotenv==1.0.0
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+3. **Environment Variables**
+   Create a `.env` file in the backend directory:
+   ```env
+   # MongoDB
+   MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/afyaapp
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+   # Africa's Talking API
+   AFRICASTALKING_USERNAME=your_username
+   AFRICASTALKING_API_KEY=your_api_key
+
+   # Server Configuration
+   PORT=5000
+   ```
+
+4. **Run Backend**
+   ```bash
+   python app.py
+   ```
+
+## 🔧 Configuration
+
+### Required API Keys
+
+1. **MongoDB Atlas**
+   - Create account at [MongoDB Atlas](https://www.mongodb.com/atlas)
+   - Create cluster and get connection string
+   - Add to `MONGO_URI` in `.env`
+
+2. **Africa's Talking**
+   - Sign up at [Africa's Talking](https://africastalking.com/)
+   - Get API key and username from dashboard
+   - Add to `.env` file
+
+### Frontend Configuration
+
+Update the API endpoints in your React components to match your backend URL:
+- Development: `http://localhost:5000`
+- Production: Your deployed backend URL
+
+## 📁 Project Structure
+
+```
+afyaapp/
+├── backend/
+│   ├── app.py              # Flask backend
+│   ├── requirements.txt    # Python dependencies
+│   └── .env               # Environment variables
+├── src/
+│   ├── components/
+│   │   ├── AfyaApp.tsx    # Main app component
+│   │   └── SignIn.tsx     # User registration
+│   ├── pages/
+│   │   └── Index.tsx      # Home page
+│   └── main.tsx           # App entry point
+└── README.md
 ```
 
-**Edit a file directly in GitHub**
+## 🚀 Deployment
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Frontend Deployment (Lovable)
+1. Click "Publish" button in Lovable interface
+2. Your app will be deployed automatically
+3. Optional: Connect custom domain in Project Settings
 
-**Use GitHub Codespaces**
+### Backend Deployment Options
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+**Option 1: Railway**
+```bash
+# Install Railway CLI
+npm install -g @railway/cli
 
-## What technologies are used for this project?
+# Login and deploy
+railway login
+railway init
+railway up
+```
 
-This project is built with:
+**Option 2: Render**
+1. Connect GitHub repository
+2. Set environment variables in dashboard
+3. Deploy automatically
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+**Option 3: Heroku**
+```bash
+# Install Heroku CLI and login
+heroku login
+heroku create your-app-name
+heroku config:set MONGO_URI=your_mongo_uri
+heroku config:set AFRICASTALKING_USERNAME=your_username
+heroku config:set AFRICASTALKING_API_KEY=your_api_key
+git push heroku main
+```
 
-## How can I deploy this project?
+## 🔒 Security Notes
 
-Simply open [Lovable](https://lovable.dev/projects/d751b59a-5ca1-4883-b8b4-e74ba2c81fbb) and click on Share -> Publish.
+- Never commit `.env` files to version control
+- Use environment variables for all sensitive data
+- Enable MongoDB IP whitelist in production
+- Use HTTPS in production
 
-## Can I connect a custom domain to my Lovable project?
+## 📱 SMS Features
 
-Yes, you can!
+- Automatic SMS alerts based on user location
+- Custom alert messages per county
+- SMS callback handling for user responses
+- Phone number validation for Kenyan numbers (+254)
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🗄️ Database Schema
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+**Users Collection:**
+```javascript
+{
+  name: String,
+  email: String,
+  phone_number: String, // Format: +254XXXXXXXXX
+  location: String      // County name
+}
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Make changes
+4. Test thoroughly
+5. Submit pull request
+
+## 📞 Support
+
+For issues or questions:
+- Check the [Lovable Documentation](https://docs.lovable.dev/)
+- Review API documentation for Africa's Talking
+- Check MongoDB Atlas connection guides
