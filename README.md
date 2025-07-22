@@ -42,9 +42,21 @@ A health alert system for Kenya that allows users to register and receive SMS no
    cd afya-kenya-alerts
    ```
 
-## Backend Setup
+## Backend Setup ⚠️ **CRITICAL: Backend Must Run Separately**
 
-1. **Install Python dependencies**
+**Important**: Lovable only runs the frontend React app. You must run the Python Flask backend separately on your local machine or deploy it to a cloud service.
+
+1. **Get Africa's Talking API Credentials First**
+   Before setting up the backend, you **MUST** register for Africa's Talking:
+   - Go to [https://africastalking.com/](https://africastalking.com/)
+   - Click "Sign Up" and create a free account
+   - Verify your email and complete account setup
+   - Login to your dashboard to get your credentials:
+     - **Username**: Usually your email or a generated username
+     - **API Key**: Found in the "API" section of your dashboard
+   - **Add credits**: Purchase SMS credits to send messages (required for production)
+
+2. **Install Python dependencies**
    ```bash
    cd backend
    python -m venv venv
@@ -52,12 +64,12 @@ A health alert system for Kenya that allows users to register and receive SMS no
    pip install -r requirements.txt
    ```
 
-2. **Configure environment variables**
-   Create a `.env` file in the backend directory:
+3. **Configure environment variables**
+   Create a `.env` file in the backend directory with your **actual** API credentials:
    ```env
-   # Africa's Talking API
-   AFRICASTALKING_USERNAME=your_africastalking_username
-   AFRICASTALKING_API_KEY=your_africastalking_api_key
+   # Africa's Talking API (Replace with your actual credentials)
+   AFRICASTALKING_USERNAME=your_actual_username_from_africastalking
+   AFRICASTALKING_API_KEY=your_actual_api_key_from_africastalking
    
    # MongoDB (local or remote)
    MONGO_URI=mongodb://localhost:27017/afyaapp
@@ -68,11 +80,13 @@ A health alert system for Kenya that allows users to register and receive SMS no
    FLASK_ENV=development
    ```
 
-3. **Start the backend server**
+4. **Start the backend server**
    ```bash
    python app.py
    ```
    The backend API will be available at http://localhost:5000
+   
+   **Note**: The backend must be running for SMS functionality to work!
 
 ## Frontend Setup
 
@@ -121,10 +135,18 @@ A health alert system for Kenya that allows users to register and receive SMS no
    - Create cluster and get connection string
    - Add to `MONGO_URI` in `.env`
 
-2. **Africa's Talking**
-   - Sign up at [Africa's Talking](https://africastalking.com/)
-   - Get API key and username from dashboard
-   - Add to `.env` file
+2. **Africa's Talking SMS API** ⚠️ **REQUIRED FOR SMS FUNCTIONALITY**
+   - Visit [Africa's Talking](https://africastalking.com/) and create a free account
+   - Complete the registration process and verify your account
+   - Navigate to your dashboard and find your API credentials:
+     - **Username**: Found in your account dashboard
+     - **API Key**: Generate or copy from the API section
+   - **Important**: You'll need to add credits to your account to send SMS messages
+   - Add both credentials to your backend `.env` file:
+     ```env
+     AFRICASTALKING_USERNAME=your_actual_username
+     AFRICASTALKING_API_KEY=your_actual_api_key
+     ```
 
 ### Frontend Configuration
 
